@@ -12,6 +12,7 @@ def getContour(meidoc):
     
     loc1 = int(ncs[0].getAttribute('loc'))
     contour = []
+    syltexts = []
     
     for nc in ncs:
         loc2 = int(nc.getAttribute('loc'))
@@ -20,7 +21,16 @@ def getContour(meidoc):
         # Update loc1 value to the current position
         loc1 = loc2
 
-    return contour
+        syllable = nc.parentNode.parentNode
+        syl = syllable.getElementsByTagName('syl')[0]
+        sylchild = syl.firstChild
+        if(sylchild):
+            syltext = sylchild.nodeValue
+        else:
+            syltext = None
+        syltexts.append(syltext)
+
+    return contour, syltexts
 
 
 if __name__ == "__main__":
@@ -44,26 +54,26 @@ if __name__ == "__main__":
         all_results = []
         for row in all_entries:
             meidoc_A = minidom.parse("../GABCtoMEI/MEI_outfiles/MEI_intermedfiles/" + row[0] + ".mei")
-            contour_A = getContour(meidoc_A)
+            contour_A, syltexts_A = getContour(meidoc_A)
             meidoc_B = minidom.parse("../GABCtoMEI/MEI_outfiles/MEI_intermedfiles/" + row[1] + ".mei")
-            contour_B = getContour(meidoc_B)
+            contour_B, syltexts_B = getContour(meidoc_B)
             #### TO DO: Eventually substitute by "MEI_outfiles," this would mean to translate pitches to contour for square notation files
 
             # Calculate Levenshtein distance
             distance = Levenshtein.distance(contour_A, contour_B)
             # Print the results
-            all_results.append(['\n'+row[0], row[1], "DISTANCE = " + str(distance)])
+            all_results.append(['\n'+row[0], '', row[1], '', "DISTANCE = " + str(distance)])
             for i in range(0, max(len(contour_A),len(contour_B))):
                 if (i < len(contour_A) and i < len(contour_B)):
-                    results = [contour_A[i], contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
+                    results = [syltexts_A[i], contour_A[i], syltexts_B[i], contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
                 elif (i >= len(contour_A) and i < len(contour_B)):
-                    results = [None, contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
+                    results = [None, None, syltexts_B[i], contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
                 elif (i < len(contour_A) and i >= len(contour_B)):
-                    results = [contour_A[i], None, Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
+                    results = [syltexts_A[i], contour_A[i], None, None, Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
                 # else:
                     # doesn't happen
                 all_results.append(results)
-            all_results.append(['\n', '\n', '\n'])
+            all_results.append(['\n', '\n', '\n', '\n', '\n'])
         print(all_results)
 
         with open("crosscomparison_results.csv", "w") as f:
