@@ -40,6 +40,8 @@ if __name__ == "__main__":
         csvfile.close()
         print(all_entries)
 
+
+        all_results = []
         for row in all_entries:
             meidoc_A = minidom.parse("../GABCtoMEI/MEI_outfiles/MEI_intermedfiles/" + row[0] + ".mei")
             contour_A = getContour(meidoc_A)
@@ -50,16 +52,24 @@ if __name__ == "__main__":
             # Calculate Levenshtein distance
             distance = Levenshtein.distance(contour_A, contour_B)
             # Print the results
-            print(row[0], row[1], distance)
+            all_results.append(['\n'+row[0], row[1], "DISTANCE = " + str(distance)])
             for i in range(0, max(len(contour_A),len(contour_B))):
                 if (i < len(contour_A) and i < len(contour_B)):
-                    print(contour_A[i], contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1]))
+                    results = [contour_A[i], contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
                 elif (i >= len(contour_A) and i < len(contour_B)):
-                    print(None, contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1]))
+                    results = [None, contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
                 elif (i < len(contour_A) and i >= len(contour_B)):
-                    print(contour_A[i], None, Levenshtein.distance(contour_A[:i+1], contour_B[:i+1]))
-                # else: doesn't happen
-            print("\n")
+                    results = [contour_A[i], None, Levenshtein.distance(contour_A[:i+1], contour_B[:i+1])]
+                # else:
+                    # doesn't happen
+                all_results.append(results)
+            all_results.append(['\n', '\n', '\n'])
+        print(all_results)
+
+        with open("crosscomparison_results.csv", "w") as f:
+            writer = csv.writer(f)
+            writer.writerows(all_results)
+        f.close()
 
     # Two files to compare
     else:
@@ -82,4 +92,5 @@ if __name__ == "__main__":
                 print(None, contour_B[i], Levenshtein.distance(contour_A[:i+1], contour_B[:i+1]))
             elif (i < len(contour_A) and i >= len(contour_B)):
                 print(contour_A[i], None, Levenshtein.distance(contour_A[:i+1], contour_B[:i+1]))
-            # else: doesn't happen
+            # else:
+                # doesn't happen
