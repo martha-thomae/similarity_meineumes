@@ -98,15 +98,16 @@ if __name__ == "__main__":
         print()
         print(alignment)
 
-        difference = 0
-        matches = 0
+        matches, difference = 0
         alig1, alig2 = alignment.get_aligned_sequences()
         for i in range(0, len(alig1)):
             if (alig1[i] == alig2[i]):
                 # match
                 matches += 1
+                # save xml:id to highlight color
             else:
                 # mismatch or indel
                 difference += 1
+                pass
         print("MATCHES: " + str(matches))
         print("DIFFERENCES: " + str(difference))
