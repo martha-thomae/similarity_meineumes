@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
             # Calculate alignment
             alignment = needle.NeedlemanWunsch(contour_A, contour_B)
-            alignment.gap_character = "x"
+            alignment.gap_character = "_"
             # Print the results
             print(row[0], row[1], alignment.get_score())
             print(alignment)
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
         # Calculate alignment
         alignment = needle.NeedlemanWunsch(contour_A, contour_B)
-        alignment.gap_character = "x"
+        alignment.gap_character = "_"
         # Print the results
         print(args.file1, args.file2, alignment.get_score())
         print(alignment)
