@@ -61,8 +61,22 @@ if __name__ == "__main__":
             alignment = needle.NeedlemanWunsch(contour_A, contour_B)
             alignment.gap_character = "_"
             # Print the results
-            print(row[0], row[1], alignment.get_score())
+            print(row[0], "|", row[1], "|", "SCORE: " + str(alignment.get_score()), "|", "IDENTITY % OF ALIGNMENT: " + str(alignment.get_identity()))
+            print()
             print(alignment)
+
+            difference = 0
+            matches = 0
+            alig1, alig2 = alignment.get_aligned_sequences()
+            for i in range(0, len(alig1)):
+                if (alig1[i] == alig2[i]):
+                    # match
+                    matches += 1
+                else:
+                    # mismatch or indel
+                    difference += 1
+            print("MATCHES: " + str(matches))
+            print("DIFFERENCES: " + str(difference))
             print()
 
 
@@ -80,5 +94,19 @@ if __name__ == "__main__":
         alignment = needle.NeedlemanWunsch(contour_A, contour_B)
         alignment.gap_character = "_"
         # Print the results
-        print(args.file1, args.file2, alignment.get_score())
+        print(args.file1, "|", args.file2, "|", "SCORE: " + str(alignment.get_score()), "|", "IDENTITY % OF ALIGNMENT: " + str(alignment.get_identity()))
+        print()
         print(alignment)
+
+        difference = 0
+        matches = 0
+        alig1, alig2 = alignment.get_aligned_sequences()
+        for i in range(0, len(alig1)):
+            if (alig1[i] == alig2[i]):
+                # match
+                matches += 1
+            else:
+                # mismatch or indel
+                difference += 1
+        print("MATCHES: " + str(matches))
+        print("DIFFERENCES: " + str(difference))
