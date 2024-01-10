@@ -104,10 +104,11 @@ if __name__ == "__main__":
             if (alig1[i] == alig2[i]):
                 # match
                 matches += 1
-                # save xml:id to highlight color
+                pass
             else:
                 # mismatch or indel
                 difference += 1
-                pass
+                # save xml:id to highlight color
+        
         print("MATCHES: " + str(matches))
         print("DIFFERENCES: " + str(difference))
